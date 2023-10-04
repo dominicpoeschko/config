@@ -1,0 +1,5 @@
+#! /bin/sh
+_trap_exit() { tmux kill-session -t $$; }
+trap _trap_exit EXIT
+
+tmux new-session -s $$

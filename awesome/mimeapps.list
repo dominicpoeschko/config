@@ -1,0 +1,24 @@
+[Added Associations]
+inode/directory=org.kde.dolphin.desktop;
+text/plain=nvim.desktop;
+x-scheme-handler/geo=google-maps-geo-handler.desktop;
+x-scheme-handler/http=google-chrome.desktop;
+x-scheme-handler/https=google-chrome.desktop;
+x-scheme-handler/mailto=thunderbird.desktop;
+x-scheme-handler/tel=Zoom.desktop;
+x-scheme-handler/tg=userapp-Telegram Desktop-MTX4W0.desktop;
+
+[Default Applications]
+application/pdf=okular.desktop;
+inode/directory=org.kde.dolphin.desktop;
+text/plain=nvim.desktop;
+x-scheme-handler/geo=google-maps-geo-handler.desktop;
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/mailto=thunderbird.desktop;
+x-scheme-handler/msteams=teams.desktop
+x-scheme-handler/tel=Zoom.desktop;
+x-scheme-handler/tg=userapp-Telegram Desktop-MTX4W0.desktop
+text/html=google-chrome.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/unknown=google-chrome.desktop
