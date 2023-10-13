@@ -1,7 +1,7 @@
 #! /usr/bin/sh
 sudo pacman -S --needed thunderbird awesome rofi pasystray numlockx xlockmore thunderbird pavucontrol paprefs keepassxc xautolock gnome-themes-extra qt5ct acpid acpilight
 trizen -S --needed birdtray systemd-numlockontty ksnip networkmanager-dmenu-git
-systemctl --user enable pulseaudio.socket
+#systemctl --user enable pulseaudio.socket
 sudo systemctl enable numLockOnTty.service
 sudo systemctl enable acpid.service
 mkdir -p ~/.config/awesome

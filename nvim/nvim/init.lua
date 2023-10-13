@@ -7,11 +7,7 @@ require('dp-which-key')
 require('dp-galaxy-line')
 require('dp-cmp')
 
-require("indent_blankline").setup {
-    char = "|",
-    buftype_exclude = { "terminal" },
-    use_treesitter = true
-}
+require("ibl").setup {}
 
 require('neoclip').setup()
 require('spellsitter').setup()
