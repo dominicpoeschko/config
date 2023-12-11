@@ -605,11 +605,4 @@ if hostname == "dominic-t580" or hostname == "dominic-laptop" or hostname == "do
     awful.spawn("blueman-applet", false);
 end
 
-if hostname == "dominic-t580" then
-    os.execute("xinput set-button-map 9 1 1 3")
-end
---if hostname == "dominic-tower" then
---    awful.spawn("xautolock -locknow",false);
---end
-
 -- }}}

@@ -103,7 +103,7 @@ return require("packer").startup(
 
         use { "rhysd/vim-clang-format", opt = true }
 
-        use { "HiPhish/nvim-ts-rainbow2", opt = true }
+        use { "HiPhish/rainbow-delimiters.nvim", opt = true }
 
         require_plugin("nvim-lspconfig")
         require_plugin("popup.nvim")
@@ -133,7 +133,7 @@ return require("packer").startup(
         require_plugin("nvim-neoclip.lua")
         require_plugin("zk-nvim")
         require_plugin("vim-clang-format")
-        require_plugin("nvim-ts-rainbow2")
+        require_plugin("rainbow-delimiters.nvim")
         require_plugin("kkharji/sqlite.lua")
     end
 )
