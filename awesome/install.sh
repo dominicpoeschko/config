@@ -21,3 +21,4 @@ ln -sf "$PWD"/mimeapps.list ~/.local/share/applications/mimeapps.list
 ln -sf "$PWD"/birdtray-config.json ~/.config
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
 sudo ln -sf "$PWD"/override.conf /etc/systemd/system/getty@tty1.service.d
+sudo cp "$PWD"/backlight_sudo /etc/sudoers.d

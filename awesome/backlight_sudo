@@ -1,0 +1,1 @@
+dominic ALL=(ALL:ALL) NOPASSWD: /usr/bin/xbacklight
