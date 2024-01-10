@@ -4,24 +4,20 @@
 [credential]
     helper = store
 [core]
+    pager = delta
     editor = nvim
 [push]
     default = simple
 [pull]
     rebase = false
-[diff]
-    tool = nvimdiff
-[difftool]
-    prompt = false
-[difftool "nvimdiff"]
-    cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
-[merge]
-    tool = nvimmerge
-[mergetool]
-    prompt = false
-[mergetool "nvimmerge"]
-    cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
-[color "diff"]
-    meta = 11
 [color]
 	ui = auto
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true
+    light = false
+[merge]
+    conflictstyle = diff3
+[diff]
+    colorMoved = default
