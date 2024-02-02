@@ -15,8 +15,11 @@
 [interactive]
     diffFilter = delta --color-only
 [delta]
+    features = decorations
     navigate = true
     light = false
+    line-numbers = true
+    side-by-side = true
 [merge]
     conflictstyle = diff3
 [diff]

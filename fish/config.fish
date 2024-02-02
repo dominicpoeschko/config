@@ -4,6 +4,7 @@ end
 
 atuin init fish | source
 
+set -x TERM xterm-256color
 set -x EDITOR nvim
 set -x VISUAL nvim
 #set -x CMAKE_GENERATOR Ninja
