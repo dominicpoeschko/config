@@ -105,6 +105,8 @@ return require("packer").startup(
 
         use { "HiPhish/rainbow-delimiters.nvim", opt = true }
 
+        use { "nvim-pack/nvim-spectre", opt = true }
+
         require_plugin("nvim-lspconfig")
         require_plugin("popup.nvim")
         require_plugin("plenary.nvim")
@@ -134,6 +136,7 @@ return require("packer").startup(
         require_plugin("zk-nvim")
         require_plugin("vim-clang-format")
         require_plugin("rainbow-delimiters.nvim")
-        require_plugin("kkharji/sqlite.lua")
+        require_plugin("sqlite.lua")
+        require_plugin("nvim-spectre")
     end
 )

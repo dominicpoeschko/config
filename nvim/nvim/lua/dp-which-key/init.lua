@@ -92,6 +92,7 @@ local mappings = {
     s = {
         name = "+Search",
         s = { ":%s///gc<Left><Left><Left><Left>", "search and replace", silent = false },
+        p = { "<cmd>lua require('spectre').toggle()<cr>", "spectre" },
         r = { "<cmd>Telescope oldfiles<cr>", "open recent files" },
         t = { "<cmd>Telescope live_grep<cr>", "grep" }
     },

@@ -43,22 +43,33 @@ require('nvim-treesitter.configs').setup {
     indent = { enable = true }
 }
 
-require("zk").setup()
-
+require('zk').setup()
+require('spectre').setup()
 require('dp-lsp')
 require('dp-lsp.clangd')
 require 'lspconfig'.pyright.setup {}
 require 'lspconfig'.cmake.setup {}
 require 'lspconfig'.lua_ls.setup {}
 require 'lspconfig'.bashls.setup {}
-require'lspconfig'.tsserver.setup{}
-require'lspconfig'.html.setup{}
+require 'lspconfig'.tsserver.setup{}
+require 'lspconfig'.html.setup{}
+require 'lspconfig'.qmlls.setup{
+    cmd = {
+        "qmlls6"
+    }
+}
 require 'lspconfig'.jsonls.setup {
     cmd = {
         "vscode-json-languageserver",
         "--stdio"
-    },
+    }
 }
+
+vim.filetype.add({
+  extension = {
+    qml = "qml"
+  }
+})
 
 vim.cmd(
 [[
