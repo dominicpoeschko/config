@@ -17,15 +17,6 @@ alias ... 'cd ../..'
 alias .... 'cd ../../..'
 alias ..... 'cd ../../../..'
 
-
-if which lsd 2>&1 1> /dev/null
-    alias ls lsd
-end
-
-alias la "ls -A"
-alias ll "ls -l"
-alias lla "ls -lA"
-
 function __ssh_agent_is_started -d "check if ssh agent is already started"
     if begin; test -f "$SSH_ENV"; and test -z "$SSH_AGENT_PID"; end
         source "$SSH_ENV" > /dev/null
@@ -40,7 +31,6 @@ function __ssh_agent_is_started -d "check if ssh agent is already started"
     return $status
 end
 
-
 function __ssh_agent_start -d "start a new ssh agent"
     ssh-agent -c | sed 's/^echo/#echo/' > $SSH_ENV
     chmod 600 "$SSH_ENV"
@@ -54,6 +44,10 @@ end
 
 if not __ssh_agent_is_started
     __ssh_agent_start
+end
+
+if which lsd 2>&1 1> /dev/null
+    alias ls lsd
 end
 
 function sizeof
@@ -191,37 +185,8 @@ function fish_prompt --description="Write out the prompt"
 
 end
 
-function sudo --description="wrapper to sudo"
-    if functions -q $argv[1]
-        set argv fish -c "$argv"
-    end
-    command sudo $argv
-end
-
-if which fzf 2>&1 1> /dev/null
-
-    function fzf_complete
-        set -l last_word (commandline | awk '{print $NF}')
-
-        begin; complete -C; end \
-            | sort | uniq \
-            | fzf --reverse -d \t -1 -0 --ansi --header="$last_word" --height="80%" --tabstop=4 \
-            | read -l token
-
-        # Remove description
-        set token (string replace -r \t'.*' '' -- $token)
-        commandline -rt -- "$token"
-    end
-
-    function fish_user_key_bindings
-        fzf_key_bindings
-    end
-    bind \ce 'fzf_complete; commandline -f repaint'
-end
-
-
 if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ] && [ -z "$TMUX" ]
-    if [ (hostname) = "dominic-tower" ] || [ (hostname) = "dominic-laptop" ] || [ (hostname) = "dominic-workstation" ] || [ (hostname) = "dominic-t580" ]
+    if [ (hostname) = "dp-probook" ] || [ (hostname) = "dominic-tower" ] || [ (hostname) = "dominic-laptop" ] || [ (hostname) = "dominic-workstation" ] || [ (hostname) = "dominic-t580" ]
         exec startx
     end
 end

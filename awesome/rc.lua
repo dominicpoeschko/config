@@ -600,7 +600,7 @@ if result ~= true and result ~= 0 then
     awful.spawn("birdtray", false);
 end
 
-if hostname == "dominic-t580" or hostname == "dominic-laptop" or hostname == "dominic-workstation" then
+if hostname == "dominic-t580" or hostname == "dominic-laptop" or hostname == "dominic-workstation" or hostname == "dp-probook" then
     awful.spawn.with_shell("xautolock -notify 10 -notifier \"notify-send -u critical -t 10000 \\\"Lock in 10 sec\\\"\" -time 15 -locker \"xset dpms force off & slock && xset dpms 0 0 0 && xset -dpms\"  &")
     awful.spawn("blueman-applet", false);
 end

@@ -1,2 +1,2 @@
 #! /bin/sh
-alacritty -o shell.program="closing-tmux" "$@"
+kitty "$@"

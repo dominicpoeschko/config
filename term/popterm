@@ -1,5 +1,5 @@
 #! /bin/sh
 
-if ! pgrep -f "alacritty -o shell.program=closing-tmux -t popterm"; then
-    alacritty -o shell.program=closing-tmux -t popterm
+if ! pgrep -f "kitty -T popterm"; then
+    kitty -T popterm
 fi
