@@ -73,6 +73,3 @@ filter_mode_shell_up_keybinding = "global"
 #   "^secret-cmd",
 #   "^innocuous-cmd .*--secret=.+"
 # ]
-
-[daemon]
-enabled = true
