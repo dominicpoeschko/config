@@ -190,11 +190,3 @@ if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ] && [ -z "$TMUX" ]
         exec startx
     end
 end
-
-if test -n "$SSH_CLIENT" -o -n "$SSH_TTY" -o -n "$SSH_CONNECTION"
-    if test -z "$TMUX"
-        if which tmux
-            exec tmux new -A -s default
-        end
-    end
-end
