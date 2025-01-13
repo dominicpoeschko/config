@@ -9,6 +9,14 @@ return {
         }
     },
     {
+        "danielfalk/smart-open.nvim",
+        dependencies = {
+            { "kkharji/sqlite.lua" },
+            { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+            { "nvim-telescope/telescope-fzy-native.nvim" },
+        }
+    },
+    {
         "romgrk/barbar.nvim",
         dependencies = {
             "lewis6991/gitsigns.nvim",
@@ -17,6 +25,27 @@ return {
     },
     {
         "folke/which-key.nvim"
+    },
+    {
+        "mg979/vim-visual-multi"
+    },
+    {
+        "lukas-reineke/indent-blankline.nvim",
+    },
+    {
+        "HiPhish/rainbow-delimiters.nvim"
+    },
+    {
+        "dstein64/nvim-scrollview"
+    },
+    {
+        "lewis6991/gitsigns.nvim"
+    },
+    {
+        "ntpeters/vim-better-whitespace"
+    },
+    {
+        "rhysd/vim-clang-format"
     },
     {
         "nvim-treesitter/nvim-treesitter",
