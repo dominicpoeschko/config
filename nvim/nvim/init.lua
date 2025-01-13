@@ -62,7 +62,7 @@ require("ibl").setup { scope = { highlight = highlight } }
 
 hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
 
-require 'lspconfig'.clangd.setup {
+require("lspconfig").clangd.setup {
     cmd = {
         "clangd",
         "--header-insertion=never",
@@ -71,7 +71,9 @@ require 'lspconfig'.clangd.setup {
         "--background-index",
         "--enable-config"
     },
-    --on_attach = require 'dp-lsp'.common_on_attach,
+    capabilities = require('cmp_nvim_lsp').default_capabilities(),
+    on_attach = function(client, bufnr)
+    end,
     handlers = {
         ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
             virtual_text = false,
@@ -81,4 +83,5 @@ require 'lspconfig'.clangd.setup {
         })
     }
 }
+
 vim.cmd('colorscheme gruvbox')
