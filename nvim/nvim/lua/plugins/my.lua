@@ -3,6 +3,9 @@ return {
         "ellisonleao/gruvbox.nvim"
     },
     {
+         "bfrg/vim-c-cpp-modern"
+    },
+    {
         "nvim-telescope/telescope.nvim",
         dependencies = {
             "nvim-lua/plenary.nvim"
