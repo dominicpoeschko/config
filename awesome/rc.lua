@@ -335,6 +335,14 @@ globalkeys = gears.table.join(
         function() awful.spawn("rofi -show window -font \"Hack Nerd Font 10\" -theme Monokai") end,
         { description = "run window prompt", group = "launcher" }),
 
+    awful.key({ modkey, }, "n",
+        function() awful.spawn("networkmanager-dmenu") end,
+        { description = "run nm prompt", group = "launcher" }),
+
+    awful.key({ modkey, }, "b",
+        function() awful.spawn("bluetoothmenu") end,
+        { description = "run bluetooth prompt", group = "launcher" }),
+
     -- Audio volume
     awful.key({}, "XF86AudioRaiseVolume", function() awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%", false) end)
     ,
@@ -602,7 +610,6 @@ end
 
 if hostname == "dominic-t580" or hostname == "dominic-laptop" or hostname == "dominic-workstation" or hostname == "dp-probook" then
     awful.spawn.with_shell("xautolock -notify 10 -notifier \"notify-send -u critical -t 10000 \\\"Lock in 10 sec\\\"\" -time 15 -locker \"xset dpms force off & slock && xset dpms 0 0 0 && xset -dpms\"  &")
-    awful.spawn("blueman-applet", false);
 end
 
 -- }}}

@@ -18,6 +18,7 @@ ln -sf "$PWD"/mimeapps.list ~/.config
 ln -sf "$PWD"/networkmanager-dmenu ~/.config
 ln -sf "$PWD"/mimeapps.list ~/.local/share/applications/mimeapps.list
 
+sudo ln -sf "$PWD"/bluetoothmenu /usr/bin/bluetoothmenu
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
 sudo ln -sf "$PWD"/override.conf /etc/systemd/system/getty@tty1.service.d
 sudo cp "$PWD"/backlight_sudo /etc/sudoers.d
