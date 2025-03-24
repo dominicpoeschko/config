@@ -3,10 +3,8 @@ if not status is-interactive
 end
 
 function __check_and_start_atuin -d "check and eventually start atuin daemon"
-    set --local tmp (ps -ef)
-
-    if not echo $tmp | grep "atuin daemon" 2>&1 1> /dev/null
-        atuin daemon &
+    if not test -S /run/user/0/atuin.sock
+        atuin daemon 2>&1 1> /dev/null  &
         disown $last_pid
     end
 end
