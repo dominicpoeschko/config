@@ -2,6 +2,15 @@ if not status is-interactive
     exit
 end
 
+function __check_and_start_atuin -d "check and eventually start atuin daemon"
+    if not test -S /run/user/0/atuin.sock
+        atuin daemon 2>&1 1> /dev/null  &
+        disown $last_pid
+    end
+end
+
+__check_and_start_atuin
+
 atuin init fish | source
 
 set -x TERM xterm-256color
@@ -190,3 +199,4 @@ if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ] && [ -z "$TMUX" ]
         exec startx
     end
 end
+
