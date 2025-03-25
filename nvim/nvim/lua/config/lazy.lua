@@ -19,6 +19,9 @@ require("lazy").setup({
     { "folke/lazy.nvim", lazy = true },
     { import = "plugins" }
   },
+  rocks = {
+    enabled = false
+  },
   defaults = {
     lazy = false,
     version = false
