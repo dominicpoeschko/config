@@ -3,9 +3,17 @@ if not status is-interactive
 end
 
 function __check_and_start_atuin -d "check and eventually start atuin daemon"
-    if not test -S /run/user/0/atuin.sock
-        atuin daemon 2>&1 1> /dev/null  &
-        disown $last_pid
+    set --local tmp (ps -ef)
+    echo $tmp | grep "atuin daemon" &> /dev/null
+    set --local running $status
+
+    set --local socket  /run/user/(id -u)/atuin.sock
+    if begin; not test -S $socket; or test $running -ne 0; end
+        if not set -q container
+            rm -rf  $socket
+            atuin daemon &> /dev/null &
+            disown $last_pid
+        end
     end
 end
 
@@ -197,6 +205,12 @@ end
 if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ] && [ -z "$TMUX" ]
     if [ (hostname) = "dp-probook" ] || [ (hostname) = "dominic-tower" ] || [ (hostname) = "dominic-laptop" ] || [ (hostname) = "dominic-workstation" ] || [ (hostname) = "dominic-t580" ]
         exec startx
+    end
+end
+
+if [ (hostname) = "dev-dp" ]
+    if not set -q container
+        /root/dev-docker-shell.sh
     end
 end
 
