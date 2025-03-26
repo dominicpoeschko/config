@@ -82,6 +82,10 @@ require("lspconfig").clangd.setup {
 }
 
 require("lspconfig").cmake.setup {}
+require("lspconfig").yamlls.setup {}
+require("lspconfig").jsonls.setup {}
+require("lspconfig").pylsp.setup {}
+
 
 vim.cmd('colorscheme gruvbox')
 
