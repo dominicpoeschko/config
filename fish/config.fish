@@ -37,7 +37,6 @@ alias ..... 'cd ../../../..'
 function __ssh_agent_is_started -d "check if ssh agent is already started"
     if set -q SSH_AUTH_SOCK
         if test -S $SSH_AUTH_SOCK
-            echo $SSH_AUTH_SOCK
             return 0
         end
     end
