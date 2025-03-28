@@ -83,7 +83,12 @@ require("lspconfig").clangd.setup {
 
 require("lspconfig").cmake.setup {}
 require("lspconfig").yamlls.setup {}
-require("lspconfig").jsonls.setup {}
+require("lspconfig").jsonls.setup {
+    cmd = {
+        "vscode-json-languageserver",
+        "--stdio"
+    },
+}
 require("lspconfig").pylsp.setup {}
 
 
