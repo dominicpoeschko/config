@@ -98,8 +98,27 @@ alias checkout_master='git submodule foreach --recursive git checkout master'
 
 alias init_submodules='git submodule update --init --recursive'
 
+function checkout_submodule_branch
+    for repo in (git submodule foreach --recursive | awk '{print $2}' | sed 's/\'//g')
+        pushd $repo
+        set list
+        for x in (git branch -a --contains (git rev-parse HEAD))
+            set list $list $x
+        end
+        if test (count $list) -gt 1
+            echo $list[1] | grep 'detached' > /dev/null
+            if test $status -eq 0
+                set branch (string trim -l -r (echo $list[2] | sed 's/remotes\/origin\///g'))
+                echo $repo is in detached state switching to $branch
+                git checkout $branch
+            end
+        end
+        popd
+    end
+end
+
 function pullfast
-    git submodule status --recursive | awk '{print $2}' | xargs --max-procs=8 --replace=dir git -C dir pull \
+    git submodule status --recursive | awk '{print $2}' | xargs --max-procs=(nproc) -i sh -c "git -C {} pull || echo {} faild" \
     && git pull \
     && git submodule status --recursive \
     && git status
