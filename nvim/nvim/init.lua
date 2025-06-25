@@ -20,7 +20,7 @@ require("config.lazy")
 
 vim.keymap.set("n", "<leader>r", ":%s///gc<Left><Left><Left><Left>", {desc = "Search and Replace", silent = false})
 vim.keymap.set("n", "<leader>f", ':Telescope smart_open<CR>', {noremap = true, silent = true })
-vim.keymap.set("n", "<leader>d", ':Telescope find_files<CR>', {noremap = true, silent = true })
+vim.keymap.set("n", "<leader>d", ':Telescope find_files follow=true<CR>', {noremap = true, silent = true })
 vim.keymap.set("n", "<leader>x", ':Telescope live_grep<CR>', {noremap = true, silent = true })
 vim.keymap.set("n", "<leader>s", ':Telescope grep_string<CR>', {noremap = true, silent = true })
 
