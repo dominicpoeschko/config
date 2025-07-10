@@ -74,5 +74,7 @@ filter_mode_shell_up_keybinding = "session"
 #   "^innocuous-cmd .*--secret=.+"
 # ]
 
+enter_accept = false
+
 [daemon]
 enabled = true
