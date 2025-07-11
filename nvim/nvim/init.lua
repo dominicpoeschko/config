@@ -30,13 +30,17 @@ vim.keymap.set("n", "<leader>lf", "<cmd>lua if vim.bo.filetype == 'cpp' or vim.b
 vim.keymap.set("n", "<leader>li", "<cmd>lua vim.lsp.buf.hover()<cr>", {desc = "Hover Info"})
 vim.keymap.set("n", '<leader>ld', '<cmd>lua vim.diagnostic.open_float({scope="line"})<CR>', {desc = "Line diagnostic", noremap=true, silent=true})
 
+vim.keymap.set('n', '<F5>', require('dap').continue)
+vim.keymap.set('n', '<F10>', require('dap').step_over)
+vim.keymap.set('n', '<F11>', require('dap').step_into)
+vim.keymap.set('n', '<F12>', require('dap').step_out)
+vim.keymap.set('n', '<leader>b', require('dap').toggle_breakpoint)
+
+vim.keymap.set('n', '<leader>du', require('dapui').toggle)
+
+
 require("which-key").add({"<leader>l", group = "+LSP"})
 require("which-key").add({"<leader>g", group = "+Goto"})
-
---function lsp_config.tsserver_on_attach(client, bufnr)
---    lsp_config.common_on_attach(client, bufnr)
---    client.resolved_capabilities.document_formatting = true
---end
 
 local highlight = {
     "RainbowRed",
@@ -93,6 +97,7 @@ require("lspconfig").jsonls.setup {
 }
 require("lspconfig").pylsp.setup {}
 
+require('dap-go').setup()
 
 vim.cmd('colorscheme gruvbox')
 

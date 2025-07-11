@@ -159,7 +159,7 @@ end
 
 if [ (hostname) = "dev-dp" ]
     if not set -q container
-        /root/dev-docker-shell.sh
+        /root/dev-docker-shell.sh -a
     end
 end
 
