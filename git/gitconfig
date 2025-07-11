@@ -24,3 +24,5 @@
     conflictstyle = diff3
 [diff]
     colorMoved = default
+[mergetool "nvimdiff"]
+  layout = "LOCAL,BASE,REMOTE / MERGED"

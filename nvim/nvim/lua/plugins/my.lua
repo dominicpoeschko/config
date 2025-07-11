@@ -36,7 +36,39 @@ return {
         "lukas-reineke/indent-blankline.nvim",
     },
     {
-        "HiPhish/rainbow-delimiters.nvim"
+        "HiPhish/rainbow-delimiters.nvim",
+        dependencies = {
+            "lukas-reineke/indent-blankline.nvim"
+        },
+        config = function()
+            local highlight = {
+                "RainbowRed",
+                "RainbowYellow",
+                "RainbowBlue",
+                "RainbowOrange",
+                "RainbowGreen",
+                "RainbowViolet",
+                "RainbowCyan",
+            }
+
+            local hooks = require "ibl.hooks"
+            -- create the highlight groups in the highlight setup hook, so they are reset
+            -- every time the colorscheme changes
+            hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+                vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+                vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+                vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+                vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+                vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+                vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+                vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+            end)
+
+            vim.g.rainbow_delimiters = { highlight = highlight }
+            require("ibl").setup { scope = { highlight = highlight } }
+
+            hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+        end
     },
     {
         "dstein64/nvim-scrollview"
@@ -52,7 +84,7 @@ return {
     },
     {
         "nvim-treesitter/nvim-treesitter",
-        run = ":TSUpdate",
+        build = ":TSUpdate",
         event = "BufRead",
         config = function()
             require'nvim-treesitter.configs'.setup {
@@ -84,7 +116,7 @@ return {
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['<C-e>'] = cmp.mapping.abort(),
-                    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Auswahl bestätigen
+                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
                 }),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
@@ -96,6 +128,16 @@ return {
         end,
     },
     {
-        "neovim/nvim-lspconfig"
-    }
+        "nvim-telescope/telescope-ui-select.nvim",
+        config = function()
+            require("telescope").setup({
+                extensions = {
+                    ["ui-select"] = {
+                        require("telescope.themes").get_dropdown {}
+                    }
+                }
+            })
+            require("telescope").load_extension("ui-select")
+        end,
+    },
 }
