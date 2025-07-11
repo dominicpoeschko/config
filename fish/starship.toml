@@ -1,0 +1,62 @@
+format = """
+$status
+[\\[](yellow)$username$hostname[\\]](yellow)$git_branch$git_commit$git_status$directory[\\[](yellow)$time[\\]](yellow)
+$character"""
+
+[status]
+disabled = false
+format = "$symbol"
+success_symbol = "[OK](green)"
+symbol = "[FAIL $status](red)"
+
+[username]
+style_user = "green"
+style_root = "red"
+format = "[$user]($style)"
+show_always = true
+
+[hostname]
+ssh_only = true
+ssh_symbol= "[@](red)"
+format = "$ssh_symbol[$hostname](red)"
+
+[git_branch]
+format = "[\\[](cyan)[$branch](purple)$remote_name$remote_branch"
+symbol = ""
+truncation_length = 20
+truncation_symbol = "…"
+
+[git_commit]
+commit_hash_length = 7
+format = "[@$tag](bright-black)"
+only_detached = false
+tag_symbol = ""
+tag_disabled = false
+
+[git_status]
+format = "|$all_status$ahead_behind[\\]](cyan)"
+conflicted = "[✖${count}](red)"
+ahead = "[⇡${count}](green)"
+behind = "[⇣${count}](red)"
+diverged = "[⇕${count}](purple)"
+up_to_date = "[✓](green)"
+untracked = "[…${count}](red)"
+stashed = "[📦${count}](cyan)"
+modified = "[●${count}](blue)"
+staged = "[✚${count}](yellow)"
+renamed = "[»${count}](purple)"
+deleted = "[✘${count}](red)"
+
+[directory]
+format = "[\\[](yellow)[$path](purple)[\\]](yellow)"
+truncation_length = 0
+truncate_to_repo = true
+
+[time]
+disabled = false
+format = "[$time](bright-blue)"
+time_format = "%T"
+
+[character]
+success_symbol = "[-> ](yellow)"
+error_symbol = "[-> ](yellow)"
