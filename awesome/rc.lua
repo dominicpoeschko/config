@@ -569,6 +569,7 @@ os.execute("xset dpms 0 0 0")
 os.execute("xset -dpms")
 os.execute("xset s  0 0")
 os.execute("xset s off")
+os.execute("xset m 9 1")
 --autostart
 
 awful.spawn.with_shell("numlockx &");

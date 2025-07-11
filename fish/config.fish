@@ -135,6 +135,12 @@ function extract --description="Expand or extract bundled & compressed files"
       else  # single gzip
         gunzip $argv[1]
       end
+    case xz
+      if test (echo $argv[1] | awk -F. '{print $(NF-1)}') = tar  # tar bundle compressed with xz
+        tar -xvf $argv[1]
+      else  # single gzip
+        unxz $argv[1]
+      end
     case tgz  # same as tar.gz
       tar -zxvf $argv[1]
     case bz2  # tar compressed with bzip2
