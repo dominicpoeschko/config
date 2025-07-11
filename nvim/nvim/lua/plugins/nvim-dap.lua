@@ -1,6 +1,6 @@
 return {
     {
-        "leoluz/nvim-dap-go"
+        "leoluz/nvim-dap-go",
         config = function()
             require('dap-go').setup()
         end
@@ -32,24 +32,34 @@ return {
 
             -- Helper function to find CMake build directory
             local function find_cmake_build_dir()
-                -- Find all directories matching build patterns
-                local build_patterns = {
-                    'build',
-                    'Build',
-                    'build_*',
-                    'build-*',
-                }
+                local ok, result = pcall(function()
+                    -- Find all directories matching build patterns
+                    local build_patterns = {
+                        'build',
+                        'Build',
+                        'build_*',
+                        'build-*',
+                    }
 
-                local found_dirs = {}
+                    local found_dirs = {}
 
-                for _, pattern in ipairs(build_patterns) do
-                    local matches = vim.fn.glob(pattern, false, true)
-                    for _, match in ipairs(matches) do
-                        if vim.fn.isdirectory(match) == 1 then
-                            table.insert(found_dirs, match)
+                    for _, pattern in ipairs(build_patterns) do
+                        local matches = vim.fn.glob(pattern, false, true)
+                        for _, match in ipairs(matches) do
+                            if vim.fn.isdirectory(match) == 1 then
+                                table.insert(found_dirs, match)
+                            end
                         end
                     end
+                    return found_dirs
+                end)
+
+                if not ok then
+                    vim.notify("Error finding build directories: " .. tostring(result), vim.log.levels.ERROR)
+                    return nil
                 end
+
+                local found_dirs = result
 
                 -- Remove duplicates and sort
                 local unique_dirs = {}
@@ -121,19 +131,29 @@ return {
                     return nil -- Build directory selection was cancelled
                 end
 
-                local executables = vim.fn.glob(build_dir .. '/**/*', false, true)
-                local filtered = {}
+                local ok, result = pcall(function()
+                    local executables = vim.fn.glob(build_dir .. '/**/*', false, true)
+                    local filtered = {}
 
-                -- Filter for ELF executable files only
-                for _, file in ipairs(executables) do
-                    if vim.fn.executable(file) == 1 then
-                        -- Check if it's an ELF file using 'file' command
-                        local file_output = vim.fn.system('file "' .. file .. '"')
-                        if string.match(file_output, 'ELF.*executable') then
-                            table.insert(filtered, file)
+                    -- Filter for ELF executable files only
+                    for _, file in ipairs(executables) do
+                        if vim.fn.executable(file) == 1 then
+                            -- Check if it's an ELF file using 'file' command
+                            local file_output = vim.fn.system('file "' .. file .. '"')
+                            if string.match(file_output, 'ELF.*executable') then
+                                table.insert(filtered, file)
+                            end
                         end
                     end
+                    return filtered
+                end)
+
+                if not ok then
+                    vim.notify("Error finding executables: " .. tostring(result), vim.log.levels.ERROR)
+                    return nil
                 end
+
+                local filtered = result
 
                 -- Sort by executable name only
                 table.sort(filtered, function(a, b)
@@ -197,16 +217,26 @@ return {
 
             -- Helper function to list and select process
             local function find_process()
-                -- Get list of processes with their PIDs and names
-                local ps_output = vim.fn.system('ps -eo pid,comm --no-headers')
-                local processes = {}
+                local ok, result = pcall(function()
+                    -- Get list of processes with their PIDs and names
+                    local ps_output = vim.fn.system('ps -eo pid,comm --no-headers')
+                    local processes = {}
 
-                for line in ps_output:gmatch('[^\r\n]+') do
-                    local pid, name = line:match('%s*(%d+)%s+(.+)')
-                    if pid and name then
-                        table.insert(processes, {pid = tonumber(pid), name = name})
+                    for line in ps_output:gmatch('[^\r\n]+') do
+                        local pid, name = line:match('%s*(%d+)%s+(.+)')
+                        if pid and name then
+                            table.insert(processes, {pid = tonumber(pid), name = name})
+                        end
                     end
+                    return processes
+                end)
+
+                if not ok then
+                    vim.notify("Error finding processes: " .. tostring(result), vim.log.levels.ERROR)
+                    return nil
                 end
+
+                local processes = result
 
                 -- Sort by process name
                 table.sort(processes, function(a, b)

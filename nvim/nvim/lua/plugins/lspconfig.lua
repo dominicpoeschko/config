@@ -11,7 +11,7 @@ return {
                     "--background-index"
                 },
                 handlers = {
-                    ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+                    ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.handlers["textDocument/publishDiagnostics"], {
                         virtual_text = false,
                         signs = true,
                         underline = true,
