@@ -4,26 +4,6 @@ return {
         lazy = false,
         event = "VimEnter",
         config = function()
-            local colors = {
-                bg = '#292D38',
-                yellow = '#DCDCAA',
-                dark_yellow = '#D7BA7D',
-                cyan = '#4EC9B0',
-                green = '#608B4E',
-                light_green = '#B5CEA8',
-                string_orange = '#CE9178',
-                orange = '#FF8800',
-                purple = '#C586C0',
-                magenta = '#D16D9E',
-                grey = '#858585',
-                blue = '#569CD6',
-                vivid_blue = '#4FC1FF',
-                light_blue = '#9CDCFE',
-                red = '#D16969',
-                error_red = '#F44747',
-                info_yellow = '#FFCC66'
-            }
-
             local function lsp_client()
                 local clients = vim.lsp.get_clients({ bufnr = 0 })
                 if next(clients) == nil then return '' end
@@ -78,7 +58,7 @@ return {
                     lualine_y = { 'progress' },
                     lualine_z = {
                         { 'location' },
-                        { lsp_client, color = { fg = colors.grey } },
+                        { lsp_client, color = { fg = '#858585' } },
                     },
                 },
                 inactive_sections = {

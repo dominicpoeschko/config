@@ -84,7 +84,7 @@ return {
     },
     {
         "nvim-treesitter/nvim-treesitter",
-        run = ":TSUpdate",
+        build = ":TSUpdate",
         event = "BufRead",
         config = function()
             require'nvim-treesitter.configs'.setup {
@@ -116,7 +116,7 @@ return {
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['<C-e>'] = cmp.mapping.abort(),
-                    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Auswahl bestätigen
+                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
                 }),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
@@ -125,6 +125,19 @@ return {
                     { name = "buffer" },
                 }),
             }
+        end,
+    },
+    {
+        "nvim-telescope/telescope-ui-select.nvim",
+        config = function()
+            require("telescope").setup({
+                extensions = {
+                    ["ui-select"] = {
+                        require("telescope.themes").get_dropdown {}
+                    }
+                }
+            })
+            require("telescope").load_extension("ui-select")
         end,
     },
 }
