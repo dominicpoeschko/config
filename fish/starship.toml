@@ -1,7 +1,9 @@
 format = """
-$status
-[\\[](yellow)$username$hostname[\\]](yellow)$git_branch$git_commit$git_status$directory[\\[](yellow)$time[\\]](yellow)
+$status$python$container
+[\\[](yellow)$username[@](yellow)${custom.hostname_local}${custom.hostname_remote}[\\]](yellow)$git_branch$git_commit$git_status$directory[\\[](yellow)$time[\\]](yellow)
 $character"""
+
+add_newline = false
 
 [status]
 disabled = false
@@ -16,9 +18,21 @@ format = "[$user]($style)"
 show_always = true
 
 [hostname]
-ssh_only = true
-ssh_symbol= "[@](red)"
-format = "$ssh_symbol[$hostname](red)"
+disabled = true
+
+[custom.hostname_local]
+disabled = false
+when = 'test -z "$SSH_CLIENT" -a -z "$SSH_TTY" -a -z "$SSH_CONNECTION"'
+command = 'hostname'
+style = "bold green"
+format = '[$output](bold green)'
+
+[custom.hostname_remote]
+disabled = false
+when = 'test -n "$SSH_CLIENT" -o -n "$SSH_TTY" -o -n "$SSH_CONNECTION"'
+command = 'hostname'
+style = "bold red"
+format = '[$output](bold red)'
 
 [git_branch]
 format = "[\\[](cyan)[$branch](purple)$remote_name$remote_branch"
@@ -50,7 +64,7 @@ deleted = "[✘${count}](red)"
 [directory]
 format = "[\\[](yellow)[$path](purple)[\\]](yellow)"
 truncation_length = 0
-truncate_to_repo = true
+truncate_to_repo = false
 
 [time]
 disabled = false
@@ -58,5 +72,15 @@ format = "[$time](bright-blue)"
 time_format = "%T"
 
 [character]
-success_symbol = "[-> ](yellow)"
-error_symbol = "[-> ](yellow)"
+success_symbol = "[->](yellow)"
+error_symbol = "[->](yellow)"
+
+[container]
+format = '[$symbol \[$name\]]($style) '
+
+[python]
+detect_files = []
+detect_extensions = []
+detect_folders = []
+format=' [${symbol}(\($virtualenv\) )]($style)'
+pyenv_version_name = true
