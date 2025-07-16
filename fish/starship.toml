@@ -60,6 +60,7 @@ modified = "[●${count}](blue)"
 staged = "[✚${count}](yellow)"
 renamed = "[»${count}](purple)"
 deleted = "[✘${count}](red)"
+use_git_executable = true
 
 [git_state]
 format ='|[$state($progress_current/$progress_total)]($style)'
