@@ -26,3 +26,7 @@
     colorMoved = default
 [mergetool "nvimdiff"]
   layout = "LOCAL,BASE,REMOTE / MERGED"
+[submodule]
+	fetchJobs = 8
+[fetch]
+	parallel = 8
