@@ -1,6 +1,6 @@
 format = """
 $status$python$container
-[\\[](yellow)$username[@](yellow)${custom.hostname_local}${custom.hostname_remote}[\\]](yellow)$git_branch$git_commit$git_status$directory[\\[](yellow)$time[\\]](yellow)
+[\\[](yellow)$username[@](yellow)${custom.hostname_local}${custom.hostname_remote}[\\]](yellow)$git_branch$git_commit$git_state$git_status$directory[\\[](yellow)$time[\\]](yellow)
 $character"""
 
 add_newline = false
@@ -60,6 +60,10 @@ modified = "[●${count}](blue)"
 staged = "[✚${count}](yellow)"
 renamed = "[»${count}](purple)"
 deleted = "[✘${count}](red)"
+use_git_executable = true
+
+[git_state]
+format ='|[$state($progress_current/$progress_total)]($style)'
 
 [directory]
 format = "[\\[](yellow)[$path](purple)[\\]](yellow)"
