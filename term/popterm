@@ -1,5 +1,0 @@
-#! /bin/sh
-
-if ! pgrep -f "kitty -T popterm"; then
-    kitty -T popterm
-fi

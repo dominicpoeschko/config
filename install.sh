@@ -1,16 +1,15 @@
 #! /bin/bash
 
 folders=(
-    slock
-    clang_format
-    fish
-    tmux
-    alacritty
     awesome
+    clang_format
+    contour
+    fish
     git
-    term
-    ssh
     nvim
+    slock
+    ssh
+    zellij
 )
 
 for F in "${folders[@]}"

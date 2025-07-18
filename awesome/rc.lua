@@ -50,9 +50,7 @@ beautiful.get().font = "Hack Nerd Font 10"
 beautiful.get().border_width = beautiful.xresources.apply_dpi(1)
 
 local numTags = 3
-tabbed_terminal = "term"
-pop_terminal = "popterm"
-terminal = "alacritty"
+terminal = "kitty"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -86,7 +84,7 @@ awful.layout.layouts = {
 -- Create a launcher widget and a main menu
 
 mymainmenu = awful.menu({ items = {
-    { "terminal", tabbed_terminal },
+    { "terminal", terminal },
     { "shutdown", function() awful.spawn("systemctl poweroff") end },
     { "restart", function() awful.spawn("systemctl reboot") end },
 }
@@ -131,7 +129,6 @@ gears.timer.start_new(1,
         return true
     end
 )
-
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -256,30 +253,6 @@ globalkeys = gears.table.join(
     awful.key({ modkey, }, "s", hotkeys_popup.show_help,
         { description = "show help", group = "awesome" }),
 
-    awful.key({ }, "F12",
-        function ()
-            local dropdown = function (c)
-                return awful.rules.match(c, {name = "popterm"})
-            end
-            local temp
-            for c in awful.client.iterate(dropdown) do
-                 temp = c
-            end
-            if temp and temp.hidden == false then
-                temp.hidden = true
-            elseif temp then
-                temp:move_to_tag(awful.tag.selected())
-                temp.hidden = false
-                temp.minimized = false
-                client.focus = temp
-                temp:raise()
-            else
-                awful.spawn("popterm")
-            end
-        end,
-        { description = "toggle popterm", group = "awesome" }
-    ),
-
     awful.key({ modkey, "Control" }, "Left", awful.tag.viewprev,
         { description = "view previous", group = "tag" }),
     awful.key({ modkey, "Control" }, "Right", awful.tag.viewnext,
@@ -311,7 +284,7 @@ globalkeys = gears.table.join(
         { description = "go back", group = "client" }),
 
     -- Standard program
-    awful.key({ modkey, }, "x", function() awful.spawn(tabbed_terminal) end,
+    awful.key({ modkey, }, "x", function() awful.spawn(terminal) end,
         { description = "open a terminal", group = "launcher" }),
 
     awful.key({ modkey, "Control" }, "r", awesome.restart,
@@ -522,16 +495,6 @@ awful.rules.rules = {
             placement = awful.placement.no_overlap + awful.placement.no_offscreen
         }
     },
-
-    -- popterm
-    {
-        rule_any = {
-            name = { "popterm" }
-        },
-        properties = { placement = awful.placement.top_left,
-            width = slot_width(screen[1]) * 2 + beautiful.border_width * 2,
-            height = slot_height(screen[1]) }
-    },
 }
 -- }}}
 
@@ -567,9 +530,11 @@ os.execute("xset r rate 200 30")
 --disable screensaver
 os.execute("xset dpms 0 0 0")
 os.execute("xset -dpms")
-os.execute("xset s  0 0")
+os.execute("xset s 0 0")
 os.execute("xset s off")
 os.execute("xset m 9 1")
+--remove repeat from esc
+os.execute("xset -r 9")
 --autostart
 
 awful.spawn.with_shell("numlockx &");

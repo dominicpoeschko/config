@@ -21,7 +21,7 @@ __check_and_start_atuin
 
 atuin init fish | source
 
-set -x TERM xterm-256color
+set -x TERM xterm-kitty
 set -x EDITOR nvim
 set -x VISUAL nvim
 #set -x CMAKE_GENERATOR Ninja
