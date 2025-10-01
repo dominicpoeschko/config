@@ -144,6 +144,11 @@ return {
         end,
     },
     {
+      "folke/snacks.nvim",
+      priority = 1000,
+      lazy = false,
+    },
+    {
       "coder/claudecode.nvim",
       dependencies = { "folke/snacks.nvim" },
       config = true,
