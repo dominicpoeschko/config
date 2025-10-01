@@ -549,9 +549,9 @@ if result ~= true and result ~= 0 then
     awful.spawn("pasystray", false);
 end
 
-local result = os.execute("pgrep -x telegram-deskto")
+local result = os.execute("pgrep -x Telegram")
 if result ~= true and result ~= 0 then
-    awful.spawn("telegram-desktop -startintray", false);
+    awful.spawn("Telegram -startintray", false);
 end
 
 --local result = os.execute("pgrep -x owncloud")
