@@ -22,7 +22,19 @@ vim.keymap.set('n', '<F11>', require('dap').step_into, {desc = "Debug: Step Into
 vim.keymap.set('n', '<leader>wb', require('dap').toggle_breakpoint, {desc = "Debug: Toggle Breakpoint"})
 vim.keymap.set('n', '<leader>wu', require('dapui').toggle, {desc = "Debug: Toggle UI"})
 
+-- Claude Code
+vim.keymap.set('n', '<leader>ac', '<cmd>ClaudeCode<cr>', {desc = "Toggle Claude"})
+vim.keymap.set('n', '<leader>af', '<cmd>ClaudeCodeFocus<cr>', {desc = "Focus Claude"})
+vim.keymap.set('n', '<leader>ar', '<cmd>ClaudeCode --resume<cr>', {desc = "Resume Claude"})
+vim.keymap.set('n', '<leader>aC', '<cmd>ClaudeCode --continue<cr>', {desc = "Continue Claude"})
+vim.keymap.set('n', '<leader>ab', '<cmd>ClaudeCodeAdd %<cr>', {desc = "Add current buffer"})
+vim.keymap.set('v', '<leader>as', '<cmd>ClaudeCodeSend<cr>', {desc = "Send to Claude"})
+vim.keymap.set('n', '<leader>as', '<cmd>ClaudeCodeTreeAdd<cr>', {desc = "Add file"})
+vim.keymap.set('n', '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', {desc = "Accept diff"})
+vim.keymap.set('n', '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>', {desc = "Deny diff"})
+
 -- Which-key groups
 require("which-key").add({"<leader>l", group = "+LSP"})
 require("which-key").add({"<leader>g", group = "+Goto"})
 require("which-key").add({"<leader>w", group = "+Debug"})
+require("which-key").add({"<leader>a", group = "+AI/Claude"})

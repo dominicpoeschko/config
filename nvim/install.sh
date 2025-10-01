@@ -1,6 +1,6 @@
 #!/bin/sh
 yay -S --needed cmake-language-server ruby-neovim
-sudo pacman -S --needed python-pdm neovim nodejs yarn npm python-pip ripgrep fzf python-pynvim ruby cpanminus x11-ssh-askpass lua-language-server vscode-json-languageserver bash-language-server sqlite
+sudo pacman -S --needed python-pdm neovim nodejs yarn npm python-pip ripgrep fzf python-pynvim ruby cpanminus x11-ssh-askpass lua-language-server vscode-json-languageserver bash-language-server sqlite yaml-language-server
 
 cpanm --sudo -n Neovim::Ext
 sudo npm install -g neovim

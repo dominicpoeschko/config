@@ -30,6 +30,9 @@ return {
         "folke/which-key.nvim"
     },
     {
+        "echasnovski/mini.icons"
+    },
+    {
         "mg979/vim-visual-multi"
     },
     {
@@ -140,4 +143,9 @@ return {
             require("telescope").load_extension("ui-select")
         end,
     },
+    {
+      "coder/claudecode.nvim",
+      dependencies = { "folke/snacks.nvim" },
+      config = true,
+    }
 }
