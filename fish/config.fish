@@ -98,6 +98,35 @@ alias checkout_master='git submodule foreach --recursive git checkout master'
 
 alias init_submodules='git submodule update --init --recursive'
 
+function update-git-to-ssh -d "Convert git remote URLs from HTTPS to SSH for current repo and
+all submodules recursively"
+  # Convert current repo
+  set remote_url (git remote get-url origin 2>/dev/null)
+  if test -n "$remote_url"
+      if echo $remote_url | grep -qE '^https?://'
+          set ssh_url (echo $remote_url | sed -E 's#https?://([^/]+)/(.+)#git@\1:\2#')
+          git remote set-url origin $ssh_url
+          echo "Updated: $remote_url -> $ssh_url"
+      else
+          echo "Already on SSH: $remote_url"
+      end
+  end
+
+  # Convert all submodules recursively
+  git submodule foreach --recursive '
+      remote_url=$(git remote get-url origin 2>/dev/null)
+      if [ -n "$remote_url" ]; then
+          if echo $remote_url | grep -qE "^https?://"; then
+              ssh_url=$(echo $remote_url | sed -E "s#https?://([^/]+)/(.+)#git@\1:\2#")
+              git remote set-url origin $ssh_url
+              echo "Updated: $remote_url -> $ssh_url"
+          else
+              echo "Already on SSH: $remote_url"
+          fi
+      fi
+  '
+end
+
 function checkout_submodule_branch
     for repo in (git submodule foreach --recursive | awk '{print $2}' | sed 's/\'//g')
         pushd $repo

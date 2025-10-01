@@ -2,7 +2,7 @@ return {
     {
         "neovim/nvim-lspconfig",
         config = function()
-            require("lspconfig").clangd.setup {
+            vim.lsp.config('clangd', {
                 cmd = {
                     "clangd",
                     "--header-insertion=never",
@@ -18,17 +18,25 @@ return {
                         update_in_insert = true
                     })
                 }
-            }
+            })
+            vim.lsp.enable('clangd')
 
-            require("lspconfig").cmake.setup {}
-            require("lspconfig").yamlls.setup {}
-            require("lspconfig").jsonls.setup {
+            vim.lsp.config('cmake', {})
+            vim.lsp.enable('cmake')
+
+            vim.lsp.config('yamlls', {})
+            vim.lsp.enable('yamlls')
+
+            vim.lsp.config('jsonls', {
                 cmd = {
                     "vscode-json-languageserver",
                     "--stdio"
                 },
-            }
-            require("lspconfig").pylsp.setup {}
+            })
+            vim.lsp.enable('jsonls')
+
+            vim.lsp.config('pylsp', {})
+            vim.lsp.enable('pylsp')
         end
     }
 }

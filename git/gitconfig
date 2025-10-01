@@ -30,3 +30,6 @@
 	fetchJobs = 8
 [fetch]
 	parallel = 8
+[alias]
+	reset = echo \"Use git stash instead of reset --hard. If you really need reset, use git-reset\"
+	git-reset = \\!git
