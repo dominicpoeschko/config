@@ -1,6 +1,12 @@
 -- Search and Replace
 vim.keymap.set("n", "<leader>r", ":%s///gc<Left><Left><Left><Left>", {desc = "Search and Replace", silent = false})
 
+-- Window Navigation
+vim.keymap.set('n', '<A-Left>', '<C-w>h', {desc = "Move to left window"})
+vim.keymap.set('n', '<A-Right>', '<C-w>l', {desc = "Move to right window"})
+vim.keymap.set('n', '<A-Up>', '<C-w>k', {desc = "Move to window above"})
+vim.keymap.set('n', '<A-Down>', '<C-w>j', {desc = "Move to window below"})
+
 -- Telescope
 vim.keymap.set("n", "<leader>f", ':Telescope smart_open<CR>', {noremap = true, silent = true})
 vim.keymap.set("n", "<leader>d", ':Telescope find_files follow=true<CR>', {noremap = true, silent = true})
@@ -20,7 +26,7 @@ vim.keymap.set('n', '<F9>', require('dap').step_out, {desc = "Debug: Step Out"})
 vim.keymap.set('n', '<F10>', require('dap').step_over, {desc = "Debug: Step Over"})
 vim.keymap.set('n', '<F11>', require('dap').step_into, {desc = "Debug: Step Into"})
 vim.keymap.set('n', '<leader>wb', require('dap').toggle_breakpoint, {desc = "Debug: Toggle Breakpoint"})
-vim.keymap.set('n', '<leader>wu', require('dapui').toggle, {desc = "Debug: Toggle UI"})
+vim.keymap.set('n', '<leader>wu', '<cmd>DapViewToggle<CR>', {desc = "Debug: Toggle UI"})
 
 -- Claude Code
 vim.keymap.set('n', '<leader>ac', '<cmd>ClaudeCode<cr>', {desc = "Toggle Claude"})

@@ -9,14 +9,6 @@ return {
                     "--compile-commands-dir=build",
                     "--all-scopes-completion",
                     "--background-index"
-                },
-                handlers = {
-                    ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.handlers["textDocument/publishDiagnostics"], {
-                        virtual_text = false,
-                        signs = true,
-                        underline = true,
-                        update_in_insert = true
-                    })
                 }
             })
             vim.lsp.enable('clangd')
@@ -37,6 +29,7 @@ return {
 
             vim.lsp.config('pylsp', {})
             vim.lsp.enable('pylsp')
+
         end
     }
 }

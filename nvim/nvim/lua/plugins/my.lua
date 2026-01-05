@@ -89,14 +89,12 @@ return {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
         event = "BufRead",
-        config = function()
-            require'nvim-treesitter.configs'.setup {
-                ensure_installed = {"c", "cpp", "python", "lua", "yaml", "json", "markdown", "markdown_inline"},
-                highlight = {
-                    enable = true
-                },
-            }
-        end
+        opts = {
+            ensure_installed = {"c", "cpp", "python", "lua", "yaml", "json", "markdown", "markdown_inline"},
+            highlight = {
+                enable = true
+            },
+        }
     },
     {
         "hrsh7th/nvim-cmp",
