@@ -10,7 +10,7 @@ return {
         opts = {
             auto_toggle = true,
             windows = {
-                height = 0.3,
+                size = 0.3,
                 position = "below",
             },
             winbar = {
