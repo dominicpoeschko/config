@@ -1,12 +1,14 @@
 return {
     {
         "leoluz/nvim-dap-go",
+        enabled = false,
         config = function()
             require('dap-go').setup()
         end,
     },
     {
         "igorlfs/nvim-dap-view",
+        enabled = false,
         opts = {
             auto_toggle = true,
             windows = {
@@ -30,6 +32,7 @@ return {
     },
     {
         "Jorenar/nvim-dap-disasm",
+        enabled = false,
         dependencies = { "igorlfs/nvim-dap-view" },
         opts = {
             dapview_register = true,
@@ -42,6 +45,7 @@ return {
     },
     {
         'mfussenegger/nvim-dap',
+        enabled = false,
         dependencies = {
             'igorlfs/nvim-dap-view',
             'Jorenar/nvim-dap-disasm',
