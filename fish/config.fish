@@ -198,3 +198,4 @@ if [ (hostname) = "dev-dp" ]
     end
 end
 
+export PATH="$HOME/.local/bin:$PATH"
