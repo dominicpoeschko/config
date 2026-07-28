@@ -12,8 +12,7 @@ folders=(
     zellij
 )
 
-for F in "${folders[@]}"
-do
+for F in "${folders[@]}"; do
     echo Installing "$F"
     if [[ -d ${F} ]]; then
         if cd "$F"; then
@@ -24,4 +23,3 @@ do
         fi
     fi
 done
-

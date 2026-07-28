@@ -1,0 +1,85 @@
+* {
+    font-family: "Hack Nerd Font";
+    font-size: 10pt;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background: #222222;
+    color: #aaaaaa;
+}
+
+/* center tasklist: neutral, no active highlight on its container button */
+#workspaces button,
+#workspaces button.active {
+    padding: 0 6px;
+    color: #aaaaaa;
+    background: transparent;
+}
+
+#workspaces button .taskbar-window {
+    padding: 0 5px;
+    /* masks the highlight flicker on title changes: waybar drops the active
+       class for a few ms during the entry rebuild */
+    transition: background-color 300ms ease-out, color 300ms ease-out;
+}
+
+/* focused window entry, like the awesome tasklist focus highlight */
+#workspaces button .taskbar-window.active {
+    background: #535d6c;
+    color: #ffffff;
+}
+
+/* hidden windows are dimmed in place in the tasklist */
+#workspaces button .taskbar-window.hidden {
+    opacity: 0.45;
+}
+
+/* left tags */
+#workspaces.tags button {
+    color: #aaaaaa;
+}
+
+/* dim workspaces without windows */
+#workspaces.tags button.empty {
+    color: #555555;
+}
+
+#workspaces.tags button.active {
+    color: #ffffff;
+    background: #535d6c;
+}
+
+#tray,
+#pulseaudio,
+#memory,
+#battery,
+#clock {
+    padding: 0 8px;
+}
+
+#clock.date {
+    padding-right: 4px;
+}
+
+#clock.time {
+    padding-left: 0;
+}
+
+#memory {
+    color: #00ff00;
+}
+
+#memory.warning {
+    color: #ff0000;
+}
+
+#battery.warning {
+    color: #ffff00;
+}
+
+#battery.critical {
+    color: #ff0000;
+}

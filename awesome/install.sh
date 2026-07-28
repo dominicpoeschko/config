@@ -18,7 +18,11 @@ ln -sf "$PWD"/mimeapps.list ~/.config
 ln -sf "$PWD"/networkmanager-dmenu ~/.config
 ln -sf "$PWD"/mimeapps.list ~/.local/share/applications/mimeapps.list
 
-sudo ln -sf "$PWD"/bluetoothmenu /usr/bin/bluetoothmenu
+# bluetoothmenu without needing sudo: ~/.local/bin is in PATH
+mkdir -p ~/.local/bin
+ln -sf "$PWD"/bluetoothmenu ~/.local/bin/bluetoothmenu
+sudo mkdir -p /etc/X11/xorg.conf.d
+sudo ln -sf "$PWD"/00-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
 sudo ln -sf "$PWD"/override.conf /etc/systemd/system/getty@tty1.service.d
 sudo cp "$PWD"/backlight_sudo /etc/sudoers.d

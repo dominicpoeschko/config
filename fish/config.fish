@@ -186,9 +186,13 @@ end
 set fish_greeting
 starship init fish | source
 
-if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ] && [ -z "$TMUX" ]
+if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -z "$TMUX" ]
     if [ (hostname) = "dp-probook" ] || [ (hostname) = "dominic-tower" ] || [ (hostname) = "dominic-laptop" ] || [ (hostname) = "dominic-workstation" ] || [ (hostname) = "dominic-t580" ]
-        exec startx
+        if [ "$XDG_VTNR" = 1 ]
+            exec startx
+        else if [ "$XDG_VTNR" = 2 ]
+            exec start-hyprland
+        end
     end
 end
 

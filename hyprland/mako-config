@@ -1,0 +1,10 @@
+# notification daemon (replaces awesome's built-in naughty)
+font=Hack Nerd Font 10
+background-color=#222222
+text-color=#ffffff
+border-color=#535d6c
+border-size=1
+default-timeout=5000
+
+[urgency=critical]
+default-timeout=0

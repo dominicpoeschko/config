@@ -1,0 +1,165 @@
+diff --git a/include/modules/hyprland/workspace.hpp b/include/modules/hyprland/workspace.hpp
+index 1d80d33..e065a70 100644
+--- a/include/modules/hyprland/workspace.hpp
++++ b/include/modules/hyprland/workspace.hpp
+@@ -35,6 +35,8 @@ class Workspace {
+ 
+   int id() const { return m_id; };
+   std::string name() const { return m_name; };
++  // patch: expose windows for the merged hidden-in-place tasklist
++  const std::vector<WindowRepr>& windowMap() const { return m_windowMap; }
+   std::string output() const { return m_output; };
+   bool isActive() const { return m_isActive; };
+   bool isSpecial() const { return m_isSpecial; };
+diff --git a/include/modules/hyprland/workspaces.hpp b/include/modules/hyprland/workspaces.hpp
+index a5d94bb..ebe99bd 100644
+--- a/include/modules/hyprland/workspaces.hpp
++++ b/include/modules/hyprland/workspaces.hpp
+@@ -37,6 +37,8 @@ class Workspaces : public AModule, public EventHandler {
+ 
+   auto allOutputs() const -> bool { return m_allOutputs; }
+   auto showSpecial() const -> bool { return m_showSpecial; }
++  // patch: windows of the special:hidden workspace, for merged rendering
++  auto hiddenWindowMap() const -> const std::vector<WindowRepr>*;
+   auto activeOnly() const -> bool { return m_activeOnly; }
+   auto specialVisibleOnly() const -> bool { return m_specialVisibleOnly; }
+   auto persistentOnly() const -> bool { return m_persistentOnly; }
+diff --git a/src/modules/hyprland/workspace.cpp b/src/modules/hyprland/workspace.cpp
+index 4cdd891..52201e6 100644
+--- a/src/modules/hyprland/workspace.cpp
++++ b/src/modules/hyprland/workspace.cpp
+@@ -1,3 +1,4 @@
++#include <algorithm>
+ #include <json/value.h>
+ #include <spdlog/spdlog.h>
+ 
+@@ -69,22 +70,22 @@ std::optional<WindowRepr> Workspace::closeWindow(WindowAddress const& addr) {
+ bool Workspace::handleClicked(GdkEventButton* bt) const {
+   if (bt->type == GDK_BUTTON_PRESS) {
+     try {
++      // patch: lua dispatch format for hyprland >= 0.55
+       if (id() > 0) {  // normal
+         if (m_workspaceManager.moveToMonitor()) {
+-          m_ipc.getSocket1Reply("dispatch focusworkspaceoncurrentmonitor " + std::to_string(id()));
++          m_ipc.getSocket1Reply("/dispatch hl.dsp.focus({ workspace = \"" + std::to_string(id()) + "\", on_current_monitor = true })");
+         } else {
+-          m_ipc.getSocket1Reply("dispatch workspace " + std::to_string(id()));
++          m_ipc.getSocket1Reply("/dispatch hl.dsp.focus({ workspace = \"" + std::to_string(id()) + "\" })");
+         }
+       } else if (!isSpecial()) {  // named (this includes persistent)
+         if (m_workspaceManager.moveToMonitor()) {
+-          m_ipc.getSocket1Reply("dispatch focusworkspaceoncurrentmonitor name:" + name());
++          m_ipc.getSocket1Reply("/dispatch hl.dsp.focus({ workspace = \"name:" + name() + "\", on_current_monitor = true })");
+         } else {
+-          m_ipc.getSocket1Reply("dispatch workspace name:" + name());
++          m_ipc.getSocket1Reply("/dispatch hl.dsp.focus({ workspace = \"name:" + name() + "\" })");
+         }
+-      } else if (id() != -99) {  // named special
+-        m_ipc.getSocket1Reply("dispatch togglespecialworkspace " + name());
+-      } else {  // special
+-        m_ipc.getSocket1Reply("dispatch togglespecialworkspace");
++      } else {
++        // patch: never toggle the special-workspace overlay from the bar
++        return true;
+       }
+       return true;
+     } catch (const std::exception& e) {
+@@ -136,6 +137,7 @@ void Workspace::insertWindow(WindowCreationPayload create_window_payload) {
+           m_windowMap, [&addr](const auto& window) { return window.address == addr; });
+       // If the vector contains the address, update the window representation, otherwise insert it
+       if (it != m_windowMap.end()) {
++        repr.isActive = it->isActive;  // patch: keep highlight across title updates
+         *it = repr;
+       } else {
+         m_windowMap.emplace_back(repr);
+@@ -210,6 +212,12 @@ std::string& Workspace::selectIcon(std::map<std::string, std::string>& icons_map
+ }
+ 
+ void Workspace::update(const std::string& workspace_icon) {
++  if (this->isSpecial()) {
++    // patch: special workspaces never render as their own group; the
++    // special:hidden windows are merged dimmed into the active list instead
++    m_button.hide();
++    return;
++  }
+   if (this->m_workspaceManager.persistentOnly() && !this->isPersistent()) {
+     m_button.hide();
+     return;
+@@ -287,7 +295,7 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
+   }
+ 
+   bool isFirst = true;
+-  auto processWindow = [&](const WindowRepr& window_repr) {
++  auto processWindow = [&](const WindowRepr& window_repr, bool isHidden) {
+     if (shouldSkipWindow(window_repr)) {
+       return;  // skip
+     }
+@@ -302,6 +310,9 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
+     auto window_box = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
+     window_box->set_tooltip_text(window_repr.window_title);
+     window_box->get_style_context()->add_class("taskbar-window");
++    if (isHidden) {
++      window_box->get_style_context()->add_class("hidden");  // patch
++    }
+     if (window_repr.isActive) {
+       window_box->get_style_context()->add_class("active");
+     }
+@@ -338,13 +349,34 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
+     event_box->show_all();
+   };
+ 
++  // patch: one merged, stably ordered list: this workspace's windows plus the
++  // special:hidden windows rendered dimmed in place, sorted by address so
++  // nothing shuffles when windows are hidden or unhidden
++  struct TaskEntry {
++    WindowRepr repr;
++    bool hidden;
++  };
++  std::vector<TaskEntry> allWindows;
++  for (const auto& w : m_windowMap) {
++    allWindows.push_back({w, false});
++  }
++  if (isActive() && !isSpecial()) {
++    if (const auto* hiddenMap = m_workspaceManager.hiddenWindowMap();
++        hiddenMap != nullptr && hiddenMap != &m_windowMap) {
++      for (const auto& w : *hiddenMap) {
++        allWindows.push_back({w, true});
++      }
++    }
++  }
++  std::sort(allWindows.begin(), allWindows.end(),
++            [](const auto& a, const auto& b) { return a.repr.address < b.repr.address; });
+   if (m_workspaceManager.taskbarReverseDirection()) {
+-    for (auto it = m_windowMap.rbegin(); it != m_windowMap.rend(); ++it) {
+-      processWindow(*it);
++    for (auto it = allWindows.rbegin(); it != allWindows.rend(); ++it) {
++      processWindow(it->repr, it->hidden);
+     }
+   } else {
+-    for (const auto& window_repr : m_windowMap) {
+-      processWindow(window_repr);
++    for (const auto& entry : allWindows) {
++      processWindow(entry.repr, entry.hidden);
+     }
+   }
+ 
+diff --git a/src/modules/hyprland/workspaces.cpp b/src/modules/hyprland/workspaces.cpp
+index 6fa3826..4736c19 100644
+--- a/src/modules/hyprland/workspaces.cpp
++++ b/src/modules/hyprland/workspaces.cpp
+@@ -1151,4 +1151,15 @@ std::optional<int> Workspaces::parseWorkspaceId(std::string const& workspaceIdSt
+   }
+ }
+ 
++// patch: windows of the special:hidden workspace, for merged rendering
++auto Workspaces::hiddenWindowMap() const -> const std::vector<WindowRepr>* {
++  for (const auto& workspace : m_workspaces) {
++    // waybar stores special workspace names without the "special:" prefix
++    if (workspace->name() == "hidden" || workspace->name() == "special:hidden") {
++      return &workspace->windowMap();
++    }
++  }
++  return nullptr;
++}
++
+ }  // namespace waybar::modules::hyprland

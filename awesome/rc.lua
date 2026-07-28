@@ -309,7 +309,7 @@ globalkeys = gears.table.join(
         { description = "run window prompt", group = "launcher" }),
 
     awful.key({ modkey, }, "n",
-        function() awful.spawn("networkmanager-dmenu") end,
+        function() awful.spawn("networkmanager_dmenu") end,
         { description = "run nm prompt", group = "launcher" }),
 
     awful.key({ modkey, }, "b",

@@ -1,0 +1,86 @@
+{
+    "layer": "top",
+    "position": "top",
+
+    "modules-left": ["hyprland/workspaces#tags"],
+    "modules-center": ["hyprland/workspaces"],
+    "modules-right": ["tray", "pulseaudio", "memory", "battery", "clock#date", "clock#time"],
+
+    // left: plain workspace numbers, empty ones dimmed via CSS
+    "hyprland/workspaces#tags": {
+        "persistent-workspaces": { "*": 3 }
+    },
+
+    // center: awesome-style tasklist — windows of the active workspace with
+    // icon + title. format MUST contain {windows}, otherwise waybar silently
+    // ignores the whole workspace-taskbar block (workspaces.cpp:627).
+    // active-only requires the workspaces to NOT be persistent (hyprland-side).
+    "hyprland/workspaces": {
+        "active-only": true,
+        "format": "{windows}",
+        // show-special makes waybar track special workspaces; the patched
+        // build never renders them as groups — special:hidden windows appear
+        // dimmed IN PLACE in the active list instead. thunderbird
+        // (special:mail) stays fully off the bar, Mod+T toggles it.
+        "show-special": true,
+        "ignore-workspaces": ["special:mail"],
+        "workspace-taskbar": {
+            "enable": true,
+            "update-active-window": true,
+            "icon-size": 14,
+            "format": "{icon} {title:.35}",
+            "on-click-window": "~/.config/hypr/taskclick.sh {address}"
+        }
+    },
+
+    "tray": {
+        "spacing": 8
+    },
+
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-muted": "muted 󰝟",
+        "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "pavucontrol"
+    },
+
+    "memory": {
+        "interval": 1,
+        "format": "{percentage}% ",
+        "states": { "warning": 70 }
+    },
+
+    "battery": {
+        "interval": 10,
+        "format": "{capacity}% {icon}",
+        "format-icons": ["", "", "", "", ""],
+        "states": { "warning": 30, "critical": 15 }
+    },
+
+    // split in two: a module updating every second resets its tooltip, so the
+    // calendar would never stay open (waybar issue #4921)
+    "clock#date": {
+        "interval": 60,
+        "format": "{:%a %d.%m.%y}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "weeks-pos": "left",
+            "on-scroll": 1
+        },
+        // hover the date for the calendar; scroll on it to change month,
+        // right-click to toggle month/year view
+        "actions": {
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down",
+            "on-click-right": "mode"
+        }
+    },
+
+    "clock#time": {
+        "interval": 1,
+        "format": "{:%H:%M:%S}",
+        "tooltip": false
+    }
+}
