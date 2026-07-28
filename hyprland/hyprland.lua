@@ -134,11 +134,14 @@ local function slot(x, y, w, h)
         local win = hl.get_active_window()
         if not mon or not win then return end
         local ax, ay, aw, ah = workarea(mon)
-        local sw = math.floor(aw / 3)
-        local sh = math.floor(ah / 2)
+        -- hyprland draws the border outside the window, so reserve 2b per
+        -- column/row (like set_to_slot in the old rc.lua)
+        local b = tonumber(hl.get_config("general.border_size")) or 1
+        local sw = math.floor((aw - 6 * b) / 3)
+        local sh = math.floor((ah - 4 * b) / 2)
         hl.dispatch(hl.dsp.window.float({ action = "on" }))
-        hl.dispatch(hl.dsp.window.resize({ x = sw * w, y = sh * h }))
-        hl.dispatch(hl.dsp.window.move({ x = ax + sw * x, y = ay + sh * y }))
+        hl.dispatch(hl.dsp.window.resize({ x = sw * w + (w - 1) * 2 * b, y = sh * h + (h - 1) * 2 * b }))
+        hl.dispatch(hl.dsp.window.move({ x = ax + b + x * (sw + 2 * b), y = ay + b + y * (sh + 2 * b) }))
     end
 end
 
