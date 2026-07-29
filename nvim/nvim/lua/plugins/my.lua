@@ -90,7 +90,7 @@ return {
         build = ":TSUpdate",
         event = "BufRead",
         opts = {
-            ensure_installed = {"c", "cpp", "python", "lua", "yaml", "json", "markdown", "markdown_inline"},
+            ensure_installed = {"c", "cpp", "python", "lua", "yaml", "json", "markdown", "markdown_inline", "regex"},
             highlight = {
                 enable = true
             },
@@ -145,6 +145,7 @@ return {
       "folke/snacks.nvim",
       priority = 1000,
       lazy = false,
+      opts = {},
     },
     {
       "coder/claudecode.nvim",

@@ -2,6 +2,8 @@ return {
     {
         "neovim/nvim-lspconfig",
         config = function()
+            vim.lsp.set_log_level("ERROR")
+
             vim.lsp.config('clangd', {
                 cmd = {
                     "clangd",
