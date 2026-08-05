@@ -151,5 +151,11 @@ return {
       "coder/claudecode.nvim",
       dependencies = { "folke/snacks.nvim" },
       config = true,
+    },
+    {
+      "CoreyKaylor/diffbandit.nvim",
+      config = function()
+        require("diffbandit").setup()
+      end,
     }
 }

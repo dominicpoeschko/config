@@ -39,8 +39,17 @@ vim.keymap.set('n', '<leader>as', '<cmd>ClaudeCodeTreeAdd<cr>', {desc = "Add fil
 vim.keymap.set('n', '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', {desc = "Accept diff"})
 vim.keymap.set('n', '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>', {desc = "Deny diff"})
 
+-- DiffBandit
+vim.keymap.set('n', '<leader>cg', '<cmd>DiffBanditGit<cr>', {desc = "Diff changed files in repo"})
+vim.keymap.set('n', '<leader>cc', '<cmd>DiffBanditGitCurrent<cr>', {desc = "Diff current file against Git"})
+vim.keymap.set('n', '<leader>cp', '<cmd>DiffBanditCommitPanel<cr>', {desc = "Toggle commit panel"})
+vim.keymap.set('n', '<leader>cm', '<cmd>DiffBanditMerge %<cr>', {desc = "Resolve merge conflicts in current file"})
+vim.keymap.set('n', '<leader>cb', ':DiffBanditBuffers ', {desc = "Compare two buffers", silent = false})
+vim.keymap.set('n', '<leader>cf', ':DiffBanditFolderDiff ', {desc = "Compare two folders", silent = false})
+
 -- Which-key groups
 require("which-key").add({"<leader>l", group = "+LSP"})
 require("which-key").add({"<leader>g", group = "+Goto"})
 require("which-key").add({"<leader>w", group = "+Debug"})
 require("which-key").add({"<leader>a", group = "+AI/Claude"})
+require("which-key").add({"<leader>c", group = "+Compare/Diff"})

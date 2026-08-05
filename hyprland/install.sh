@@ -1,5 +1,18 @@
 #! /usr/bin/sh
-sudo pacman -S --needed hyprland waybar hyprlock hypridle mako xdg-desktop-portal-hyprland qt5-wayland qt6-wayland brightnessctl jq libnotify rofi pavucontrol wl-clipboard cliphist grim slurp satty xdotool meson ninja
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/../lib.sh"
+
+if [[ "$PKG_MANAGER" == "pacman" ]]; then
+    PKG_LIST=(hyprland waybar hyprlock hypridle mako xdg-desktop-portal-hyprland qt5-wayland qt6-wayland brightnessctl jq libnotify rofi pavucontrol wl-clipboard cliphist grim slurp satty xdotool meson ninja)
+    install_pkgs
+elif [[ "$PKG_MANAGER" == "dnf" ]]; then
+    enable_fedora_copr
+    PKG_LIST=(hyprland hyprlock hypridle mako xdg-desktop-portal-hyprland satty brightnessctl jq libnotify rofi pavucontrol wl-clipboard cliphist grim slurp xdotool mesa-libGL)
+    install_pkgs
+else
+    echo "WARNING: Unsupported package manager '$PKG_MANAGER' — skipping packages" >&2
+fi
 
 # waybar with local hyprland fixes, installs to ~/.local/bin/waybar
 "$PWD"/build-waybar.sh

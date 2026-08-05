@@ -1,9 +1,42 @@
 #! /usr/bin/sh
-sudo pacman -S --needed thunderbird awesome rofi pasystray numlockx xlockmore thunderbird pavucontrol paprefs keepassxc xautolock gnome-themes-extra qt5ct acpid acpilight
-trizen -S --needed birdtray systemd-numlockontty ksnip networkmanager-dmenu-git
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/../lib.sh"
+
+if [[ "$PKG_MANAGER" == "pacman" ]]; then
+    PKG_LIST=(thunderbird awesome rofi pasystray numlockx xlockmore pavucontrol paprefs keepassxc xautolock gnome-themes-extra qt5ct acpid acpilight)
+    install_pkgs
+    install_aur_pkg birdtray
+    install_aur_pkg systemd-numlockontty
+    install_aur_pkg ksnip
+    install_aur_pkg networkmanager-dmenu-git
+elif [[ "$PKG_MANAGER" == "dnf" ]]; then
+    PKG_LIST=(thunderbird awesome rofi pavucontrol paprefs keepassxc xautolock adwaita-legacy-gtk-theme qt5ct acpid ksnip pasystray brightnessctl)
+    install_pkgs
+    enable_fedora_copr || true
+    if ! dnf repolist copr 2>/dev/null | grep -q 'tofik/sway-tools'; then
+        echo "Enabling COPR repo: tofik/sway-tools (for networkmanager-dmenu)" >&2
+        dnf copr enable -y tofik/sway-tools 2>/dev/null
+        if [[ $? -ne 0 ]]; then
+            echo "WARNING: Could not enable tofik/sway-tools COPR (may require manual setup)" >&2
+        fi
+    fi
+    PKG_LIST=(networkmanager-dmenu)
+    install_pkgs
+    echo "NOTE: AUR-only packages skipped on Fedora: systemd-numlockontty, birdtray" >&2
+fi
+
 #systemctl --user enable pulseaudio.socket
-sudo systemctl enable numLockOnTty.service
-sudo systemctl enable acpid.service
+if systemctl list-unit-files numLockOnTty.service &>/dev/null; then
+    sudo systemctl enable numLockOnTty.service
+else
+    echo "NOTE: numLockOnTty.service does not exist — skipping" >&2
+fi
+if systemctl list-unit-files acpid.service &>/dev/null; then
+    sudo systemctl enable acpid.service
+else
+    echo "NOTE: acpid.service does not exist — skipping" >&2
+fi
 mkdir -p ~/.config/awesome
 mkdir -p ~/.config/gtk-3.0
 mkdir -p ~/.config/qt5ct
