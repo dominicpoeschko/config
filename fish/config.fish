@@ -3,17 +3,25 @@ if not status is-interactive
 end
 
 function __check_and_start_atuin -d "check and eventually start atuin daemon"
-    set --local tmp (ps -ef)
-    echo $tmp | grep "atuin daemon" &> /dev/null
-    set --local running $status
+    # one daemon shared between host and dev containers: socket path (see
+    # atuin config.toml) and pidfile both live in $HOME, which is bind
+    # mounted into the containers, so the daemon's own pidfile flock is
+    # visible on both sides and whoever finds it dead restarts it
+    set --local socket $HOME/.local/share/atuin/atuin-daemon.sock
+    set --local pidfile $HOME/.local/share/atuin/atuin-daemon.pid
 
-    set --local socket  /run/user/(id -u)/atuin.sock
-    if begin; not test -S $socket; or test $running -ne 0; end
-        if not set -q container
-            rm -rf  $socket
-            atuin daemon &> /dev/null &
-            disown $last_pid
-        end
+    if flock -n $pidfile true 2> /dev/null
+        # lock is free -> no daemon running anywhere
+        rm -f $socket
+        atuin daemon start &> /dev/null &
+        disown $last_pid
+    else if not test -S $socket
+        # a daemon is running but not on our socket (e.g. started with an
+        # old config); replace it so clients don't hang
+        pkill -u (id -u) -f 'atuin daemon'
+        rm -f $socket
+        atuin daemon start &> /dev/null &
+        disown $last_pid
     end
 end
 
