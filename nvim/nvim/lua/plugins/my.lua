@@ -145,6 +145,20 @@ return {
       "folke/snacks.nvim",
       priority = 1000,
       lazy = false,
+      opts = {
+        image = {
+          enabled = true,
+          -- mermaid (mmdc) and LaTeX (tectonic) are not installed; off by design
+          math = { enabled = false },
+          doc = {
+            enabled = true,
+            inline = true,   -- draw in the buffer where the link is
+            float = true,    -- fall back to a float if inline is unsupported
+            max_width = 80,
+            max_height = 40,
+          },
+        },
+      },
     },
     {
       "coder/claudecode.nvim",

@@ -20,7 +20,9 @@ hl.env("MOZ_ENABLE_WAYLAND", "1")
 -- prefers the locally patched build (~/.local/src/waybar: active-highlight
 -- flicker fix + lua-dispatch workspace clicks) over the repo package.
 local function restart_waybar()
-    hl.exec_cmd("pkill -SIGUSR2 -x waybar || { if [ -x ~/.local/bin/waybar ]; then exec ~/.local/bin/waybar; else exec waybar; fi; }")
+    -- falls back to the repo package if the local build fails to start
+    -- (e.g. a soname bump after a pacman upgrade)
+    hl.exec_cmd("pkill -SIGUSR2 -x waybar || { if [ -x ~/.local/bin/waybar ]; then ~/.local/bin/waybar || exec waybar; else exec waybar; fi; }")
 end
 
 -- restart waybar on hyprctl reload too, so its config changes apply on Mod+Ctrl+R
@@ -98,6 +100,12 @@ hl.config({
         repeat_rate        = 30,
         numlock_by_default = true,
         follow_mouse       = 1,
+        -- sloppy focus only on a real border crossing, like awesome's
+        -- mouse::enter. hyprland otherwise re-runs the focus-under-cursor check
+        -- after every window move/resize/close, so tiling a window with the
+        -- keyboard pulls it out from under a stationary pointer and focus jumps
+        -- to whatever is underneath -- in the middle of the keybind.
+        mouse_refocus      = false,
     },
 })
 
@@ -128,21 +136,56 @@ local function workarea(mon)
     return mon.x + left, mon.y + top, w, h
 end
 
+-- resize/move accept an explicit window selector ({resize,move}windowpixel).
+-- pin every dispatch of a multi-step sequence to one address: the bare
+-- "active window" form retargets if focus moves in between, which is exactly
+-- what a resize under the pointer used to cause. falls back to the active-window
+-- form if a hyprland version ever drops the window key.
+local function dispatch_win(build, sel, args)
+    local pinned = { window = sel }
+    for k, v in pairs(args) do pinned[k] = v end
+    local ok, dsp = pcall(build, pinned)
+    if ok and dsp and pcall(hl.dispatch, dsp) then return end
+    hl.dispatch(build(args))
+end
+
 local function slot(x, y, w, h)
     return function()
         local mon = hl.get_active_monitor()
         local win = hl.get_active_window()
         if not mon or not win then return end
+        local sel = "address:" .. win.address
         local ax, ay, aw, ah = workarea(mon)
         -- hyprland draws the border outside the window, so reserve 2b per
         -- column/row (like set_to_slot in the old rc.lua)
         local b = tonumber(hl.get_config("general.border_size")) or 1
         local sw = math.floor((aw - 6 * b) / 3)
         local sh = math.floor((ah - 4 * b) / 2)
-        hl.dispatch(hl.dsp.window.float({ action = "on" }))
-        hl.dispatch(hl.dsp.window.resize({ x = sw * w + (w - 1) * 2 * b, y = sh * h + (h - 1) * 2 * b }))
-        hl.dispatch(hl.dsp.window.move({ x = ax + b + x * (sw + 2 * b), y = ay + b + y * (sh + 2 * b) }))
+        -- the float rule covers everything, so this only matters for a window
+        -- that got tiled by hand; do it before the address-pinned geometry calls
+        if not win.floating then
+            hl.dispatch(hl.dsp.window.float({ action = "on" }))
+        end
+        dispatch_win(hl.dsp.window.resize, sel,
+            { x = sw * w + (w - 1) * 2 * b, y = sh * h + (h - 1) * 2 * b })
+        dispatch_win(hl.dsp.window.move, sel,
+            { x = ax + b + x * (sw + 2 * b), y = ay + b + y * (sh + 2 * b) })
     end
+end
+
+-- focus + raise one specific window, in a single dispatch batch. used by the
+-- waybar tasklist (taskclick.sh) via hyprctl eval; focuswindow alone does not
+-- change the z-order, so a buried window would stay buried.
+function raise_window(addr)
+    local sel = "address:" .. addr
+    hl.dispatch(hl.dsp.focus({ window = sel }))
+    -- address-pinned raise where the selector is accepted, plus the plain
+    -- active-window raise: focus was just set in this same batch, so both name
+    -- the same window and raising twice is a no-op
+    pcall(function()
+        hl.dispatch(hl.dsp.window.alter_zorder({ mode = "top", window = sel }))
+    end)
+    hl.dispatch(hl.dsp.window.bring_to_top())
 end
 
 local mod = "SUPER"

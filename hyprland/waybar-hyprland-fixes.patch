@@ -25,7 +25,7 @@ index a5d94bb..ebe99bd 100644
    auto specialVisibleOnly() const -> bool { return m_specialVisibleOnly; }
    auto persistentOnly() const -> bool { return m_persistentOnly; }
 diff --git a/src/modules/hyprland/workspace.cpp b/src/modules/hyprland/workspace.cpp
-index 4cdd891..52201e6 100644
+index 4cdd891..e5b08ab 100644
 --- a/src/modules/hyprland/workspace.cpp
 +++ b/src/modules/hyprland/workspace.cpp
 @@ -1,3 +1,4 @@
@@ -33,7 +33,16 @@ index 4cdd891..52201e6 100644
  #include <json/value.h>
  #include <spdlog/spdlog.h>
  
-@@ -69,22 +70,22 @@ std::optional<WindowRepr> Workspace::closeWindow(WindowAddress const& addr) {
+@@ -36,6 +37,8 @@ Workspace::Workspace(const Json::Value& workspace_data, Workspaces& workspace_ma
+   m_button.set_relief(Gtk::RELIEF_NONE);
+   if (m_workspaceManager.enableTaskbar()) {
+     m_content.set_orientation(m_workspaceManager.taskbarOrientation());
++    // patch: awesome-style tasklist — every window entry gets the same width
++    m_content.set_homogeneous(true);
+     m_content.pack_start(m_labelBefore, false, false);
+   } else {
+     m_content.set_center_widget(m_labelBefore);
+@@ -69,22 +72,22 @@ std::optional<WindowRepr> Workspace::closeWindow(WindowAddress const& addr) {
  bool Workspace::handleClicked(GdkEventButton* bt) const {
    if (bt->type == GDK_BUTTON_PRESS) {
      try {
@@ -64,7 +73,7 @@ index 4cdd891..52201e6 100644
        }
        return true;
      } catch (const std::exception& e) {
-@@ -136,6 +137,7 @@ void Workspace::insertWindow(WindowCreationPayload create_window_payload) {
+@@ -136,6 +139,7 @@ void Workspace::insertWindow(WindowCreationPayload create_window_payload) {
            m_windowMap, [&addr](const auto& window) { return window.address == addr; });
        // If the vector contains the address, update the window representation, otherwise insert it
        if (it != m_windowMap.end()) {
@@ -72,7 +81,7 @@ index 4cdd891..52201e6 100644
          *it = repr;
        } else {
          m_windowMap.emplace_back(repr);
-@@ -210,6 +212,12 @@ std::string& Workspace::selectIcon(std::map<std::string, std::string>& icons_map
+@@ -210,6 +214,12 @@ std::string& Workspace::selectIcon(std::map<std::string, std::string>& icons_map
  }
  
  void Workspace::update(const std::string& workspace_icon) {
@@ -85,7 +94,16 @@ index 4cdd891..52201e6 100644
    if (this->m_workspaceManager.persistentOnly() && !this->isPersistent()) {
      m_button.hide();
      return;
-@@ -287,7 +295,7 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
+@@ -264,6 +274,8 @@ void Workspace::update(const std::string& workspace_icon) {
+   m_labelBefore.get_style_context()->add_class("workspace-label");
+ 
+   if (m_workspaceManager.enableTaskbar()) {
++    // patch: an empty before-label must not claim a slot in the homogeneous row
++    m_labelBefore.set_visible(!m_labelBefore.get_text().empty());
+     updateTaskbar(workspace_icon);
+   }
+ }
+@@ -287,7 +299,7 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
    }
  
    bool isFirst = true;
@@ -94,7 +112,7 @@ index 4cdd891..52201e6 100644
      if (shouldSkipWindow(window_repr)) {
        return;  // skip
      }
-@@ -302,6 +310,9 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
+@@ -302,6 +314,9 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
      auto window_box = Gtk::make_managed<Gtk::Box>(Gtk::ORIENTATION_HORIZONTAL);
      window_box->set_tooltip_text(window_repr.window_title);
      window_box->get_style_context()->add_class("taskbar-window");
@@ -104,7 +122,19 @@ index 4cdd891..52201e6 100644
      if (window_repr.isActive) {
        window_box->get_style_context()->add_class("active");
      }
-@@ -338,13 +349,34 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
+@@ -331,20 +346,45 @@ void Workspace::updateTaskbar(const std::string& workspace_icon) {
+                                   fmt::arg("title", window_repr.window_title));
+     if (!text_after.empty()) {
+       auto window_label_after = Gtk::make_managed<Gtk::Label>(text_after);
++      // patch: left-align next to the icon and ellipsize, so equal-width
++      // entries can shrink below the title's natural size
++      window_label_after->set_xalign(0.0);
++      window_label_after->set_ellipsize(Pango::ELLIPSIZE_END);
+       window_box->pack_start(*window_label_after, true, true);
+     }
+ 
+-    m_content.pack_start(*event_box, true, false);
++    m_content.pack_start(*event_box, true, true);
      event_box->show_all();
    };
  
@@ -144,10 +174,22 @@ index 4cdd891..52201e6 100644
    }
  
 diff --git a/src/modules/hyprland/workspaces.cpp b/src/modules/hyprland/workspaces.cpp
-index 6fa3826..4736c19 100644
+index 6fa3826..c2afc60 100644
 --- a/src/modules/hyprland/workspaces.cpp
 +++ b/src/modules/hyprland/workspaces.cpp
-@@ -1151,4 +1151,15 @@ std::optional<int> Workspaces::parseWorkspaceId(std::string const& workspaceIdSt
+@@ -101,7 +101,10 @@ void Workspaces::createWorkspace(Json::Value const& workspace_data,
+   // create new workspace
+   m_workspaces.emplace_back(std::make_unique<Workspace>(workspace_data, *this, clients_data));
+   Gtk::Button& newWorkspaceButton = m_workspaces.back()->button();
+-  m_box.pack_start(newWorkspaceButton, false, false);
++  // patch: with the taskbar enabled the workspace button stretches across the
++  // whole module, so the equal-width window entries can fill the bar
++  const bool expandButton = enableTaskbar();
++  m_box.pack_start(newWorkspaceButton, expandButton, expandButton);
+   sortWorkspaces();
+   newWorkspaceButton.show_all();
+ }
+@@ -1151,4 +1154,15 @@ std::optional<int> Workspaces::parseWorkspaceId(std::string const& workspaceIdSt
    }
  }
  

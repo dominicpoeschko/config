@@ -39,8 +39,13 @@ vim.keymap.set('n', '<leader>as', '<cmd>ClaudeCodeTreeAdd<cr>', {desc = "Add fil
 vim.keymap.set('n', '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', {desc = "Accept diff"})
 vim.keymap.set('n', '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>', {desc = "Deny diff"})
 
+-- Markdown
+vim.keymap.set('n', '<leader>mt', '<cmd>RenderMarkdown toggle<cr>', {desc = "Toggle markdown render"})
+vim.keymap.set('n', '<leader>mi', function() Snacks.image.hover() end, {desc = "Show image under cursor"})
+
 -- Which-key groups
 require("which-key").add({"<leader>l", group = "+LSP"})
 require("which-key").add({"<leader>g", group = "+Goto"})
 require("which-key").add({"<leader>w", group = "+Debug"})
 require("which-key").add({"<leader>a", group = "+AI/Claude"})
+require("which-key").add({"<leader>m", group = "+Markdown"})

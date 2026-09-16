@@ -2,6 +2,11 @@
     "layer": "top",
     "position": "top",
 
+    // let the center tasklist fill everything between left and right modules
+    // instead of being centered at its natural size
+    "fixed-center": false,
+    "expand-center": true,
+
     "modules-left": ["hyprland/workspaces#tags"],
     "modules-center": ["hyprland/workspaces"],
     "modules-right": ["tray", "pulseaudio", "memory", "battery", "clock#date", "clock#time"],
@@ -17,7 +22,11 @@
     // active-only requires the workspaces to NOT be persistent (hyprland-side).
     "hyprland/workspaces": {
         "active-only": true,
+        "expand": true,
         "format": "{windows}",
+        // the taskbar row is homogeneous (patched): no separator widgets,
+        // they would claim an equal-width slot of their own
+        "format-window-separator": "",
         // show-special makes waybar track special workspaces; the patched
         // build never renders them as groups — special:hidden windows appear
         // dimmed IN PLACE in the active list instead. thunderbird
@@ -28,8 +37,10 @@
             "enable": true,
             "update-active-window": true,
             "icon-size": 14,
-            "format": "{icon} {title:.35}",
-            "on-click-window": "~/.config/hypr/taskclick.sh {address}"
+            // no length cap: entries are equal-width and the label ellipsizes
+            "format": "{icon} {title}",
+            // {button}: left raises (and hides on a repeat click), right always hides
+            "on-click-window": "~/.config/hypr/taskclick.sh {address} {button}"
         }
     },
 
