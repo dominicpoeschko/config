@@ -25,3 +25,5 @@ vim.o.timeoutlen = 300
 
 -- Plugin specific options
 vim.g.better_whitespace_operator = ""
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0

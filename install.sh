@@ -1,5 +1,10 @@
 #! /bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
+echo "Detected distribution: $DISTRO ($PKG_MANAGER)"
+
 folders=(
     awesome
     clang_format
@@ -13,7 +18,7 @@ folders=(
 )
 
 for F in "${folders[@]}"; do
-    echo Installing "$F"
+    echo "=== Installing $F ==="
     if [[ -d ${F} ]]; then
         if cd "$F"; then
             if [[ -e install.sh ]]; then

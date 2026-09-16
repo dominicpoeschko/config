@@ -43,9 +43,18 @@ vim.keymap.set('n', '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>', {desc = "Deny d
 vim.keymap.set('n', '<leader>mt', '<cmd>RenderMarkdown toggle<cr>', {desc = "Toggle markdown render"})
 vim.keymap.set('n', '<leader>mi', function() Snacks.image.hover() end, {desc = "Show image under cursor"})
 
+-- DiffBandit
+vim.keymap.set('n', '<leader>cg', '<cmd>DiffBanditGit<cr>', {desc = "Diff changed files in repo"})
+vim.keymap.set('n', '<leader>cc', '<cmd>DiffBanditGitCurrent<cr>', {desc = "Diff current file against Git"})
+vim.keymap.set('n', '<leader>cp', '<cmd>DiffBanditCommitPanel<cr>', {desc = "Toggle commit panel"})
+vim.keymap.set('n', '<leader>cm', '<cmd>DiffBanditMerge %<cr>', {desc = "Resolve merge conflicts in current file"})
+vim.keymap.set('n', '<leader>cb', ':DiffBanditBuffers ', {desc = "Compare two buffers", silent = false})
+vim.keymap.set('n', '<leader>cf', ':DiffBanditFolderDiff ', {desc = "Compare two folders", silent = false})
+
 -- Which-key groups
 require("which-key").add({"<leader>l", group = "+LSP"})
 require("which-key").add({"<leader>g", group = "+Goto"})
 require("which-key").add({"<leader>w", group = "+Debug"})
 require("which-key").add({"<leader>a", group = "+AI/Claude"})
 require("which-key").add({"<leader>m", group = "+Markdown"})
+require("which-key").add({"<leader>c", group = "+Compare/Diff"})

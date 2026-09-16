@@ -1,4 +1,4 @@
-#! /usr/bin/sh
+#!/usr/bin/env bash
 rm -rf slock
 git clone -q https://git.suckless.org/slock
 

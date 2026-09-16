@@ -90,7 +90,7 @@ return {
         build = ":TSUpdate",
         event = "BufRead",
         opts = {
-            ensure_installed = {"c", "cpp", "python", "lua", "yaml", "json", "markdown", "markdown_inline"},
+            ensure_installed = {"c", "cpp", "python", "lua", "yaml", "json", "markdown", "markdown_inline", "regex"},
             highlight = {
                 enable = true
             },
@@ -164,5 +164,11 @@ return {
       "coder/claudecode.nvim",
       dependencies = { "folke/snacks.nvim" },
       config = true,
+    },
+    {
+      "CoreyKaylor/diffbandit.nvim",
+      config = function()
+        require("diffbandit").setup()
+      end,
     }
 }
