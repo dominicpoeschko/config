@@ -2,6 +2,18 @@
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+-- glib >= 2.80 moved the Unix-specific Gio classes into their own GioUnix
+-- typelib, so Gio.UnixInputStream is nil and every awful.spawn call with a
+-- callback (easy_async, with_line_callback) throws. awesome 4.3 predates the
+-- split; alias them back until the packaged awesome is new enough.
+do
+    local ok, lgi = pcall(require, "lgi")
+    if ok and lgi.Gio and not lgi.Gio.UnixInputStream and lgi.GioUnix then
+        lgi.Gio.UnixInputStream = lgi.GioUnix.InputStream
+        lgi.Gio.UnixOutputStream = lgi.GioUnix.OutputStream
+    end
+end
+
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")

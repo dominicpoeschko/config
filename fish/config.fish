@@ -178,6 +178,10 @@ function extract --description="Expand or extract bundled & compressed files"
       unrar x $argv[1]
     case zip
       unzip $argv[1]
+    case rpm  # rpm payload is a cpio archive; unpack into a directory named after the package
+      set --local dir (basename $argv[1] .rpm)
+      mkdir -p $dir
+      rpm2cpio $argv[1] | cpio -idmv -D $dir
     case '*'
       echo "unknown extension"
   end
